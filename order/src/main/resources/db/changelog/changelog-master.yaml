@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/stations/create-stations-table.sql
+  - include:
+      file: db/changelog/stations/fill-stations-table.sql
+  - include:
+      file: db/changelog/orders/create-orders-table.sql
