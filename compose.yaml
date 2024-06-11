@@ -1,0 +1,60 @@
+services:
+  db_auth:
+    image: "postgres"
+    environment:
+      - POSTGRES_DB=auth
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - hw
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+
+  auth-api:
+    build:
+      dockerfile: auth/Dockerfile
+    environment:
+      - DB_HOST=db_auth
+    ports:
+      - "8081:8081"
+    networks:
+      - hw
+    depends_on:
+      - db_auth
+      
+  db_orders:
+    image: "postgres"
+    environment:
+      - POSTGRES_DB=orders
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - hw
+    volumes:
+      - orders_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  orders-api:
+    build:
+      dockerfile: order/Dockerfile
+    environment:
+      - DB_HOST=db_orders
+    ports:
+      - "8080:8080"
+    networks:
+      - hw
+    depends_on:
+      - db_orders
+
+
+volumes:
+  auth_data:
+  orders_data:
+
+networks:
+  hw:
+    name: hw
+    driver: bridge
